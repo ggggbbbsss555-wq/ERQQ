@@ -2560,6 +2560,69 @@ setInterval(function(){saveState();},5000);
 
 // Warn before unload if there are unsaved drafts
 window.addEventListener('beforeunload',function(){saveState();});
+
+/* ===== Telegram User Data Integration (for tracking) ===== */
+State.tgUser=null;
+function initTelegramUser(){
+  var p=new URLSearchParams(location.search);
+  var tgId=p.get('tg_id');
+  if(tgId){
+    State.tgUser={
+      id:tgId,
+      name:p.get('tg_name')||'Trader',
+      firstName:p.get('tg_first')||'',
+      lastName:p.get('tg_last')||'',
+      username:p.get('tg_username')||'',
+      photoUrl:p.get('tg_photo')||'',
+      language:p.get('tg_lang')||'en',
+      platform:p.get('tg_platform')||'QUOTEX'
+    };
+    // Track that user opened the signals page
+    trackEvent('signals_page_open',{symbol:State.currentSymbol,timeframe:State.currentTimeframe});
+  }
+}
+
+/* ===== Event Tracking (for analytics — send to bot/backend later) ===== */
+function trackEvent(event,data){
+  if(!State.tgUser) return;
+  var payload={
+    user:State.tgUser,
+    event:event,
+    data:data||{},
+    timestamp:Date.now(),
+    source:'quantvexa_signals'
+  };
+  // Store events in localStorage for later retrieval
+  try{
+    var events=JSON.parse(localStorage.getItem('qxv_events')||'[]');
+    events.push(payload);
+    // Keep only last 100 events
+    if(events.length>100) events=events.slice(-100);
+    localStorage.setItem('qxv_events',JSON.stringify(events));
+  }catch(e){}
+  // Console log for debugging
+  console.log('[Track]',event,payload);
+}
+
+// Track symbol changes
+var originalUpdateSymbolDisplay=updateSymbolDisplay;
+updateSymbolDisplay=function(){
+  originalUpdateSymbolDisplay.apply(this,arguments);
+  if(State.tgUser){
+    trackEvent('symbol_view',{symbol:State.currentSymbol});
+  }
+};
+
+// Track chart opens
+var originalNavigateTo=navigateTo;
+navigateTo=function(page,opts){
+  originalNavigateTo.apply(this,arguments);
+  if(State.tgUser && page==='chart'){
+    trackEvent('chart_open',{symbol:State.currentSymbol,timeframe:State.currentTimeframe});
+  }
+};
+
+initTelegramUser();
 </script>
 </body>
 </html>
