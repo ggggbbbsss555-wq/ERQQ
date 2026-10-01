@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>QXView — Improved</title>
+<title>QuantVexa</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
 <style>
@@ -539,6 +539,92 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
   .signal-timer-count{font-size:13px}
   .signal-symbol-name{font-size:13px}
 }
+
+/* ===== Platform Selection Screen ===== */
+.platform-screen{
+  position:fixed;inset:0;z-index:900;
+  background:#000;
+  display:none;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:32px 20px;
+  opacity:0;
+  transition:opacity 0.5s ease;
+}
+.platform-screen.visible{display:flex;opacity:1}
+.platform-screen.hidden{opacity:0;pointer-events:none}
+.platform-screen-title{
+  font-size:11px;font-weight:700;color:#00d2ff;
+  letter-spacing:2.5px;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.platform-screen-heading{
+  font-size:22px;font-weight:800;color:#fff;
+  margin-bottom:36px;text-align:center;
+  letter-spacing:0.3px;
+}
+.platform-buttons{
+  display:flex;flex-direction:column;gap:14px;
+  width:100%;max-width:360px;
+}
+.platform-btn{
+  padding:22px 20px;
+  background:linear-gradient(180deg,#131313 0%,#080808 100%);
+  border:1px solid #1f1f1f;
+  border-radius:14px;
+  cursor:pointer;
+  display:flex;align-items:center;gap:14px;
+  transition:border-color 0.22s ease,background 0.22s ease;
+  font-family:inherit;color:inherit;text-align:left;
+}
+.platform-btn:hover{
+  border-color:#00d2ff;
+  background:linear-gradient(180deg,rgba(0,210,255,0.06) 0%,#080808 100%);
+}
+.platform-btn-icon{
+  width:48px;height:48px;flex-shrink:0;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#00d2ff 0%,#0099cc 100%);
+  border:1px solid #00d2ff;
+}
+.platform-btn-icon svg{width:26px;height:26px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.platform-btn-info{flex:1;min-width:0}
+.platform-btn-name{
+  font-size:18px;font-weight:800;color:#fff;
+  letter-spacing:0.5px;margin-bottom:2px;
+}
+.platform-btn-desc{
+  font-size:11px;color:#888;font-weight:500;
+  letter-spacing:0.2px;
+}
+.platform-btn-arrow{
+  color:#555;font-size:18px;font-weight:700;
+  transition:color 0.22s ease,transform 0.22s ease;
+}
+.platform-btn:hover .platform-btn-arrow{
+  color:#00d2ff;transform:translateX(3px);
+}
+@media (max-width:480px){
+  .platform-btn{padding:18px 16px}
+  .platform-btn-icon{width:42px;height:42px}
+  .platform-btn-name{font-size:16px}
+}
+
+/* ===== Asset Flag Icons ===== */
+.item-flags{
+  display:inline-flex;
+  align-items:center;
+  gap:2px;
+  margin-right:6px;
+  font-size:14px;
+  line-height:1;
+  vertical-align:middle;
+}
+.symbol-name .item-flags,
+#currentSymbol .item-flags{
+  font-size:13px;
+  margin-right:4px;
+}
 </style>
 </head>
 <body>
@@ -556,8 +642,7 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
 <div class="top-controls" id="topControls"><div class="top-bar"><div class="top-row"><button class="top-btn symbol-btn" id="symbolBtn"><span class="symbol-name" id="currentSymbol">BTC/USDT</span><div class="symbol-info"><span class="symbol-price" id="currentPrice">67,234.50</span><span class="symbol-change positive" id="currentChange">+2.45%</span></div><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn tf-btn" id="timeframeBtn"><span id="currentTimeframe">1m</span><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn add-ind-btn" id="topAddIndicator" title="Add indicator"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div></div></div>
 <div class="tf-dropdown" id="tfDropdown"><div class="tf-dropdown-header"><div class="tf-dropdown-title">Timeframe</div><button class="tf-dropdown-close" id="tfClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="tf-options-grid" id="tfOptionsGrid"></div></div>
 <div class="overlay-menu" id="symbolMenu"><div class="overlay-header"><div class="overlay-top-row"><div class="overlay-title">Select Market</div><button class="close-btn" data-close="symbolMenu"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="search-box"><input type="text" class="search-input" id="symbolSearch" placeholder="Search symbol..." autocomplete="off" spellcheck="false"/><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div></div><div class="items-grid" id="symbolGrid"></div><div class="no-results" id="noResults">No markets found</div></div>
-<div class="signals-page" id="signalsPage"><div class="signals-header"><div class="signals-top-row"><div class="signals-title"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 7-7"/><polyline points="14 8 21 8 21 15"/></svg><span>Cross-Market <span class="title-accent">Indicator Signals</span></span></div><div class="signals-stats-bar" id="signalsStats"></div></div></div><div class="signals-grid" id="signalsGrid"></div></div>
-<div class="indicators-page" id="indicatorsPage"><div class="indicators-page-header"><div class="indicators-top-row"><div class="indicators-title-row"><div class="indicators-page-title">Indicators Library</div><div class="indicators-count-badge" id="indicatorsCountBadge">0 indicators</div><button class="ind-page-btn import-file-btn" id="importTxtBtn" style="flex:0 0 auto;margin-left:8px;padding:5px 10px;font-size:11px" title="Import from TXT file">Import TXT</button></div><div class="indicators-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><input type="text" class="indicators-search" id="indicatorsSearch" placeholder="Search indicators..." autocomplete="off" spellcheck="false"/></div></div><div class="indicators-section-title" style="color:#aaa;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:18px 0 10px">My Indicators</div></div><div class="indicators-page-grid" id="indicatorsPageGrid"></div><div class="indicators-page-header" style="margin-top:30px"><div class="indicators-section-title" style="color:#00d2ff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:0 0 10px;display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#00d2ff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Published Indicators (Community)</div><div class="indicators-search-wrap" style="width:200px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><input type="text" class="indicators-search" id="publishedSearch" placeholder="Search published..." autocomplete="off" spellcheck="false"/></div></div><div class="indicators-page-grid" id="publishedGrid"></div></div>
+<div class="indicators-page" id="indicatorsPage"><div class="indicators-page-header"><div class="indicators-top-row"><div class="indicators-title-row"><div class="indicators-page-title">Indicators Library</div><div class="indicators-count-badge" id="indicatorsCountBadge">0 indicators</div><button class="ind-page-btn import-file-btn" id="importTxtBtn" style="flex:0 0 auto;margin-left:8px;padding:5px 10px;font-size:11px" title="Import from TXT file">Import TXT</button></div><div class="indicators-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><input type="text" class="indicators-search" id="indicatorsSearch" placeholder="Search indicators..." autocomplete="off" spellcheck="false"/></div></div><div class="indicators-section-title" style="color:#aaa;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:18px 0 10px">My Indicators</div></div><div class="indicators-page-grid" id="indicatorsPageGrid"></div></div>
 <div class="editor-page" id="editorPage"><div class="editor-toolbar"><div class="editor-toolbar-left"><button class="editor-btn" id="editorBack"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span class="btn-text">Back</span></button><div class="current-indicator-display" id="currentIndicatorDisplay"><span class="current-indicator-name" id="currentIndicatorName">Signals</span><div class="current-indicator-actions"><button class="ci-action settings" id="ciSettings" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button class="ci-action delete" id="ciDelete" title="Remove"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div></div><div class="editor-toolbar-right"><button class="editor-btn" id="editorDuplicate" title="Duplicate (Ctrl+D)"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span class="btn-text">Duplicate</span></button><button class="editor-btn" id="editorNew"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="btn-text">New</span></button><button class="editor-btn primary" id="editorRun"><svg class="run-icon-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg><svg class="run-icon-stop" viewBox="0 0 24 24" style="display:none"><rect x="6" y="6" width="12" height="12" rx="1"/></svg><span class="btn-text run-label">Run</span></button></div></div><div class="indicators-list-wrapper" id="indicatorsListWrapper"><div class="indicators-list-header"><span class="indicators-list-title">All Indicators</span><span class="indicators-list-count" id="indicatorsListCount">0</span></div><div class="indicators-list-body" id="indicatorsListBody"></div></div><button class="toggle-list-btn" id="toggleListBtn" title="Toggle indicators list"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button><div class="editor-body"><div class="editor-sidebar"><div class="sidebar-header">Indicators</div><div class="sidebar-list" id="sidebarList"></div></div><div class="editor-main"><div class="code-wrapper"><textarea id="codeEditor"></textarea><div class="editor-side-toolbar" id="editorSideToolbar"><button class="editor-side-btn" id="btnSelectAll" title="Select All"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16"/><path d="M9 4v16"/></svg><span class="tooltip">Select All</span></button><button class="editor-side-btn" id="btnCopy" title="Copy"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span class="tooltip">Copy</span></button><button class="editor-side-btn" id="btnCut" title="Cut"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg><span class="tooltip">Cut</span></button></div><div class="editor-unsaved-dot" id="editorUnsavedDot" title="Unsaved changes (auto-saves every 2s)"></div></div><div class="editor-console" id="editorConsole"><div class="console-resize-handle" id="consoleResizeHandle"></div><div class="console-header" id="consoleHeader"><div class="console-title">Console</div><div class="console-header-actions"><button class="console-clear" id="consoleCopy">Copy</button><button class="console-clear" id="consoleClear">Clear</button><button class="console-close" id="consoleClose" title="Close console"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="console-output" id="consoleOutput"></div></div></div></div></div>
 <div class="modal-overlay" id="deleteConfirmModal"><div class="modal"><div class="modal-title">Delete Indicator</div><div class="modal-desc" id="deleteConfirmDesc">Are you sure?</div><div class="modal-actions"><button class="modal-btn" id="deleteCancelBtn">Cancel</button><button class="modal-btn danger" id="deleteConfirmBtn">Delete</button></div></div></div>
 <div class="modal-overlay" id="newIndicatorModal"><div class="modal"><div class="modal-title">New Indicator</div><div class="modal-desc">Enter a name for your custom indicator</div><input type="text" class="modal-input" id="newIndicatorInput" placeholder="e.g. MyStrategy" autocomplete="off" spellcheck="false"/><div class="modal-filename" id="newIndicatorFilename">File: untitled.js</div><div class="modal-error" id="newIndicatorError"></div><div class="modal-actions"><button class="modal-btn" id="newIndicatorCancel">Cancel</button><button class="modal-btn primary" id="newIndicatorContinue">Continue</button></div></div></div>
@@ -604,11 +689,38 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
 </svg>
 </div>
 
+<!-- Platform Selection Screen -->
+<div class="platform-screen" id="platformScreen">
+  <div class="platform-screen-title">QuantVexa</div>
+  <h1 class="platform-screen-heading">Select Trading Platform</h1>
+  <div class="platform-buttons">
+    <button class="platform-btn" onclick="selectPlatform('QUOTEX')">
+      <div class="platform-btn-icon">
+        <svg viewBox="0 0 24 24"><line x1="7" y1="3" x2="7" y2="21"/><rect x="4" y="7" width="6" height="9" fill="#000" fill-opacity="0.15"/><line x1="17" y1="2" x2="17" y2="22"/><rect x="14" y="10" width="6" height="7" fill="#000" fill-opacity="0.15"/></svg>
+      </div>
+      <div class="platform-btn-info">
+        <div class="platform-btn-name">QUOTEX</div>
+        <div class="platform-btn-desc">Binary options trading</div>
+      </div>
+      <div class="platform-btn-arrow">›</div>
+    </button>
+    <button class="platform-btn" onclick="selectPlatform('BINOLLA')">
+      <div class="platform-btn-icon">
+        <svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+      </div>
+      <div class="platform-btn-info">
+        <div class="platform-btn-name">BINOLLA</div>
+        <div class="platform-btn-desc">Smart advanced trading</div>
+      </div>
+      <div class="platform-btn-arrow">›</div>
+    </button>
+  </div>
+</div>
+
 <div class="bottom-bar" id="bottomBar">
   <button class="tool-btn" data-page="chart"><svg viewBox="0 0 24 24"><line x1="5" y1="4" x2="5" y2="20" stroke-width="1.2"/><rect x="3.2" y="7" width="3.6" height="8" fill="#fff" stroke="none"/><line x1="12" y1="3" x2="12" y2="19" stroke-width="1.2"/><rect x="10.2" y="5" width="3.6" height="9" fill="#fff" stroke="none"/><line x1="19" y1="6" x2="19" y2="21" stroke-width="1.2"/><rect x="17.2" y="9" width="3.6" height="7" fill="#fff" stroke="none"/></svg><span class="label">Chart</span></button>
   <button class="tool-btn" data-page="editor"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg><span class="label">Editor</span></button>
   <button class="tool-btn" data-page="indicators"><svg viewBox="0 0 24 24"><line x1="7" y1="19" x2="7" y2="5"/><polyline points="3 9 7 5 11 9"/><line x1="17" y1="5" x2="17" y2="19"/><polyline points="13 15 17 19 21 15"/></svg><span class="label">Indicators</span></button>
-  <button class="tool-btn" data-page="signals"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="badge hidden" id="signalsBadge">0</span><span class="label">Signals</span></button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
@@ -621,7 +733,7 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
 'use strict';
 
 /* ============================================================
-   QXView — Improved Build
+   QuantVexa — Trading Platform
    Refactor highlights:
    - Centralized state (State object + subscribe pattern)
    - localStorage autosave + restore
@@ -665,6 +777,29 @@ function hexToRgba(hex,a){
 }
 
 /* ---------- Constants ---------- */
+/* Currency to flag emoji mapping */
+var CURRENCY_FLAGS={
+  USD:'🇺🇸',EUR:'🇪🇺',JPY:'🇯🇵',GBP:'🇬🇧',AUD:'🇦🇺',NZD:'🇳🇿',CAD:'🇨🇦',CHF:'🇨🇭',
+  BRL:'🇧🇷',ARS:'🇦🇷',BDT:'🇧🇩',COP:'🇨🇴',EGP:'🇪🇬',IDR:'🇮🇩',INR:'🇮🇳',MXN:'🇲🇽',
+  NGN:'🇳🇬',PHP:'🇵🇭',PKR:'🇵🇰',ZAR:'🇿🇦',DZD:'🇩🇿'
+};
+
+/* Get flag emojis for a symbol like 'EURUSD_otc' or 'BTC/USDT' */
+function getFlagsForSymbol(sym){
+  // Remove _otc suffix and / separator
+  var clean=sym.replace(/_otc$/i,'').replace(/\//g,'');
+  if(clean.length===6){
+    var base=clean.substring(0,3).toUpperCase();
+    var quote=clean.substring(3,6).toUpperCase();
+    var bf=CURRENCY_FLAGS[base]||'';
+    var qf=CURRENCY_FLAGS[quote]||'';
+    if(bf&&qf) return '<span class="item-flags">'+bf+qf+'</span>';
+    if(bf||qf) return '<span class="item-flags">'+(bf||qf)+'</span>';
+  }
+  // Crypto pairs: no country flags
+  return '';
+}
+
 var SYMBOLS=[
   {symbol:'BTC/USDT',price:67234.50,change:2.45},
   {symbol:'ETH/USDT',price:3456.20,change:1.82},
@@ -681,7 +816,50 @@ var SYMBOLS=[
   {symbol:'ATOM/USDT',price:8.92,change:1.23},
   {symbol:'LTC/USDT',price:84.56,change:0.89},
   {symbol:'NEAR/USDT',price:5.43,change:6.12},
-  {symbol:'APT/USDT',price:11.23,change:-1.67}
+  {symbol:'APT/USDT',price:11.23,change:-1.67},
+  /* --- OTC exotic pairs (original) --- */
+  {symbol:'BRLUSD_otc',price:0.1985,change:0.42},
+  {symbol:'USDARS_otc',price:985.50,change:-0.31},
+  {symbol:'USDBDT_otc',price:117.25,change:0.18},
+  {symbol:'USDCOP_otc',price:4150.75,change:-0.55},
+  {symbol:'USDEGP_otc',price:48.85,change:0.12},
+  {symbol:'USDIDR_otc',price:15820.50,change:-0.28},
+  {symbol:'USDINR_otc',price:83.42,change:0.22},
+  {symbol:'USDMXN_otc',price:17.15,change:-0.41},
+  {symbol:'USDNGN_otc',price:1485.30,change:0.67},
+  {symbol:'USDPHP_otc',price:56.78,change:-0.19},
+  {symbol:'USDPKR_otc',price:278.45,change:0.34},
+  {symbol:'USDZAR_otc',price:18.92,change:-0.48},
+  /* --- OTC cross-pair majors --- */
+  {symbol:'AUDCAD_otc',price:0.9125,change:0.15},
+  {symbol:'AUDCHF_otc',price:0.5742,change:-0.22},
+  {symbol:'AUDJPY_otc',price:98.35,change:0.41},
+  {symbol:'AUDNZD_otc',price:1.0823,change:-0.12},
+  {symbol:'AUDUSD_otc',price:0.6582,change:0.28},
+  {symbol:'CADCHF_otc',price:0.6298,change:-0.18},
+  {symbol:'CADJPY_otc',price:107.85,change:0.33},
+  {symbol:'CHFJPY_otc',price:171.20,change:-0.25},
+  {symbol:'EURAUD_otc',price:1.6485,change:0.19},
+  {symbol:'EURCAD_otc',price:1.4752,change:-0.14},
+  {symbol:'EURCHF_otc',price:0.9521,change:0.08},
+  {symbol:'EURGBP_otc',price:0.8334,change:-0.16},
+  {symbol:'EURJPY_otc',price:163.45,change:0.31},
+  {symbol:'EURNZD_otc',price:1.7825,change:-0.22},
+  {symbol:'EURUSD_otc',price:1.0852,change:0.24},
+  {symbol:'GBPAUD_otc',price:1.9785,change:-0.15},
+  {symbol:'GBPCAD_otc',price:1.7702,change:0.21},
+  {symbol:'GBPCHF_otc',price:1.1425,change:-0.09},
+  {symbol:'GBPJPY_otc',price:196.15,change:0.38},
+  {symbol:'GBPNZD_otc',price:2.1398,change:-0.27},
+  {symbol:'GBPUSD_otc',price:1.3025,change:0.18},
+  {symbol:'NZDCAD_otc',price:0.8425,change:-0.13},
+  {symbol:'NZDCHF_otc',price:0.5302,change:0.07},
+  {symbol:'NZDJPY_otc',price:90.85,change:-0.21},
+  {symbol:'NZDUSD_otc',price:0.6082,change:0.25},
+  {symbol:'USDCAD_otc',price:1.3585,change:-0.17},
+  {symbol:'USDCHF_otc',price:0.8825,change:0.11},
+  {symbol:'USDDZD_otc',price:134.50,change:0.05},
+  {symbol:'USDJPY_otc',price:149.85,change:-0.23}
 ];
 var TIMEFRAMES=[
   {tf:'1m',label:'1 Minute',seconds:60},
@@ -705,6 +883,7 @@ var State={
   currentSymbol:'BTC/USDT',
   currentTimeframe:'1m',
   currentPage:'chart',
+  platform:'QUOTEX',
   searchQuery:'',
   indicatorsSearchQuery:'',
   indicators:[],
@@ -856,7 +1035,8 @@ function getTimeframeData(t){for(var i=0;i<TIMEFRAMES.length;i++){if(TIMEFRAMES[
 
 function updateSymbolDisplay(){
   var sym=getSymbolData(State.currentSymbol);
-  document.getElementById('currentSymbol').textContent=sym.symbol;
+  var flags=getFlagsForSymbol(sym.symbol);
+  document.getElementById('currentSymbol').innerHTML=flags+escapeHtml(sym.symbol);
   document.getElementById('currentPrice').textContent=formatPrice(sym.price);
   var ce=document.getElementById('currentChange');
   ce.textContent=(sym.change>=0?'+':'')+sym.change.toFixed(2)+'%';
@@ -874,8 +1054,9 @@ function buildSymbolGrid(){
     var c=document.createElement('div');
     c.className='item-card'+(s.symbol===State.currentSymbol?' active':'');
     c.style.animationDelay=(i*0.03)+'s';
-    // ESCAPED content
-    c.innerHTML='<span class="item-symbol">'+escapeHtml(s.symbol)+'</span><span class="item-change '+(s.change>=0?'positive':'negative')+'">'+(s.change>=0?'+':'')+s.change.toFixed(2)+'%</span>';
+    var flags=getFlagsForSymbol(s.symbol);
+    // ESCAPED content with flags
+    c.innerHTML='<span class="item-symbol">'+flags+escapeHtml(s.symbol)+'</span><span class="item-change '+(s.change>=0?'positive':'negative')+'">'+(s.change>=0?'+':'')+s.change.toFixed(2)+'%</span>';
     c.addEventListener('click',function(){
       State.currentSymbol=s.symbol;
       updateSymbolDisplay();
@@ -1233,7 +1414,6 @@ function navigateTo(page,opts){
     b.classList.toggle('active',b.getAttribute('data-page')===page);
   });
   document.getElementById('editorPage').classList.remove('visible');
-  document.getElementById('signalsPage').classList.remove('visible');
   document.getElementById('indicatorsPage').classList.remove('visible');
   var tc=document.getElementById('topControls'),cc=document.getElementById('chartContainer');
   if(page==='chart'){
@@ -1259,12 +1439,6 @@ function navigateTo(page,opts){
     tc.classList.remove('visible');cc.classList.remove('visible');
     buildIndicatorsPage();
     document.getElementById('indicatorsPage').classList.add('visible');
-  }else if(page==='signals'){
-    tc.classList.remove('visible');cc.classList.remove('visible');
-    buildSignalsPage();
-    document.getElementById('signalsPage').classList.add('visible');
-    State.signalsBadgeDismissed=true;
-    updateBadgeVisibility();
   }
   updatePageLifecycle();
 }
@@ -1417,17 +1591,14 @@ function buildIndicatorsPage(){
     filtered.forEach(function(ind,i){
       var card=document.createElement('div');card.className='ind-page-card';card.style.animationDelay=(i*0.05)+'s';
       var pc=ind.plots?ind.plots.length:0;
-      card.innerHTML='<div class="ind-page-card-header"><span class="ind-page-name">'+escapeHtml(ind.name)+'</span><span class="ind-page-status '+(ind.active?'':'inactive')+'"></span></div><div class="ind-page-desc">'+pc+' plot(s). '+(ind.active?'Currently drawn on chart.':'Not active.')+'</div><div class="ind-page-actions"><button class="ind-page-btn edit" data-id="'+ind.id+'">Edit</button><button class="ind-page-btn toggle '+(ind.active?'active':'')+'" data-id="'+ind.id+'">'+(ind.active?'Running':'Run')+'</button><button class="ind-page-btn publish-btn" data-id="'+ind.id+'" title="Publish to community">Publish</button><button class="ind-page-btn export-btn" data-id="'+ind.id+'" title="Export as TXT">Export</button><button class="ind-page-btn delete-btn" data-id="'+ind.id+'" title="Delete">✕</button></div>';
+      card.innerHTML='<div class="ind-page-card-header"><span class="ind-page-name">'+escapeHtml(ind.name)+'</span><span class="ind-page-status '+(ind.active?'':'inactive')+'"></span></div><div class="ind-page-desc">'+pc+' plot(s). '+(ind.active?'Currently drawn on chart.':'Not active.')+'</div><div class="ind-page-actions"><button class="ind-page-btn edit" data-id="'+ind.id+'">Edit</button><button class="ind-page-btn toggle '+(ind.active?'active':'')+'" data-id="'+ind.id+'">'+(ind.active?'Running':'Run')+'</button><button class="ind-page-btn export-btn" data-id="'+ind.id+'" title="Export as TXT">Export</button><button class="ind-page-btn delete-btn" data-id="'+ind.id+'" title="Delete">✕</button></div>';
       grid.appendChild(card);
     });
     grid.querySelectorAll('.ind-page-btn.edit').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();loadIndicator(parseInt(b.getAttribute('data-id')));navigateTo('editor');});});
     grid.querySelectorAll('.ind-page-btn.toggle').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();loadIndicator(parseInt(b.getAttribute('data-id')));toggleCurrentIndicator();buildIndicatorsPage();});});
-    grid.querySelectorAll('.ind-page-btn.publish-btn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();publishIndicator(parseInt(b.getAttribute('data-id')));});});
     grid.querySelectorAll('.ind-page-btn.export-btn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();exportIndicatorTxt(parseInt(b.getAttribute('data-id')));});});
     grid.querySelectorAll('.ind-page-btn.delete-btn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();openDeleteConfirm(parseInt(b.getAttribute('data-id')));});});
   }
-  // Build published indicators section
-  buildPublishedGrid();
 }
 
 /* ---------- Published indicators store (localStorage-based) ---------- */
@@ -1510,7 +1681,7 @@ function deletePublished(pid){
 /* Export indicator as TXT file */
 function exportIndicatorTxt(id){
   var ind=findIndicator(id);if(!ind)return;
-  var content='// QXView Indicator\n// Name: '+ind.name+'\n// Exported: '+new Date().toISOString()+'\n\n'+ind.code;
+  var content='// QuantVexa Indicator\n// Name: '+ind.name+'\n// Exported: '+new Date().toISOString()+'\n\n'+ind.code;
   shareTxtFile(ind.name,content);
 }
 
@@ -1518,7 +1689,7 @@ function exportPublishedTxt(pid){
   var list=loadPublished();
   var p=list.find(function(x){return x.id===pid;});
   if(!p)return;
-  var content='// QXView Indicator\n// Name: '+p.name+'\n// Exported: '+new Date().toISOString()+'\n\n'+p.code;
+  var content='// QuantVexa Indicator\n// Name: '+p.name+'\n// Exported: '+new Date().toISOString()+'\n\n'+p.code;
   shareTxtFile(p.name,content);
 }
 
@@ -1530,14 +1701,14 @@ function shareTxtFile(name,content){
   // Try Web Share API with file (mobile-friendly)
   if(navigator.canShare&&navigator.canShare({files:[file]})){
     navigator.share({
-      title:'QXView Indicator: '+name,
+      title:'QuantVexa Indicator: '+name,
       text:'Indicator code: '+name,
       files:[file]
     }).catch(function(){});
   }else if(navigator.share){
     // Web Share API without file (text only)
     navigator.share({
-      title:'QXView Indicator: '+name,
+      title:'QuantVexa Indicator: '+name,
       text:content
     }).catch(function(){});
   }else{
@@ -1578,7 +1749,8 @@ function importFromTxt(text){
   buildIndicatorsPage();
 }
 document.getElementById('indicatorsSearch').addEventListener('input',function(e){State.indicatorsSearchQuery=e.target.value;buildIndicatorsPage();});
-document.getElementById('publishedSearch').addEventListener('input',function(e){publishedSearchQuery=e.target.value;buildPublishedGrid();});
+var publishedSearchEl=document.getElementById('publishedSearch');
+if(publishedSearchEl)publishedSearchEl.addEventListener('input',function(e){publishedSearchQuery=e.target.value;buildPublishedGrid();});
 // Import TXT file button
 var importTxtBtn=document.getElementById('importTxtBtn');
 if(importTxtBtn){
@@ -2302,33 +2474,46 @@ document.querySelectorAll('.close-btn').forEach(function(b){b.addEventListener('
 document.getElementById('symbolSearch').addEventListener('input',function(e){State.searchQuery=e.target.value;buildSymbolGrid();});
 document.getElementById('symbolSearch').addEventListener('click',function(e){e.stopPropagation();});
 document.addEventListener('click',function(e){
-  if(!e.target.closest('.top-btn')&&!e.target.closest('.overlay-menu')&&!e.target.closest('.tf-dropdown')&&!e.target.closest('.editor-page')&&!e.target.closest('.modal-overlay')&&!e.target.closest('.signals-page')&&!e.target.closest('.indicators-page')&&!e.target.closest('.bottom-bar')&&!e.target.closest('.floating-indicators')&&!e.target.closest('.chart-zoom-controls'))closeAllMenus();
+  if(!e.target.closest('.top-btn')&&!e.target.closest('.overlay-menu')&&!e.target.closest('.tf-dropdown')&&!e.target.closest('.editor-page')&&!e.target.closest('.modal-overlay')&&!e.target.closest('.indicators-page')&&!e.target.closest('.bottom-bar')&&!e.target.closest('.floating-indicators')&&!e.target.closest('.chart-zoom-controls')&&!e.target.closest('.platform-screen'))closeAllMenus();
 });
+
+/* ---------- Platform Selection ---------- */
+function selectPlatform(name){
+  State.platform=name;
+  var platformScreen=document.getElementById('platformScreen');
+  platformScreen.classList.add('hidden');
+  setTimeout(function(){
+    platformScreen.classList.remove('visible');
+    // Show main app
+    var chartContainer=document.getElementById('chartContainer');
+    var topControls=document.getElementById('topControls');
+    var bottomBar=document.getElementById('bottomBar');
+    chartContainer.classList.add('visible');
+    topControls.classList.add('visible');
+    bottomBar.classList.add('visible');
+    if(location.hash){try{history.replaceState(null,'','#chart');}catch(e){}}
+    navigateTo('chart',{silent:true});
+  },500);
+}
 
 /* ---------- Boot ---------- */
 (function(){
   // Restore saved state first
   var restored=loadState();
   var logoContainer=document.querySelector('.logo-container');
-  var bottomBar=document.getElementById('bottomBar');
-  var chartContainer=document.getElementById('chartContainer');
-  var topControls=document.getElementById('topControls');
-  // Wait 3s, then show logo (visible for 3s), then fade out + show chart
+  var platformScreen=document.getElementById('platformScreen');
+  // Wait 2s, then show logo (visible for 3s), then fade out + show platform screen
   setTimeout(function(){
     logoContainer.classList.add('shown');
     // After 3s visible, start fading out
     setTimeout(function(){
       logoContainer.classList.add('expanded');
       setTimeout(function(){
-        chartContainer.classList.add('visible');
-        topControls.classList.add('visible');
-        bottomBar.classList.add('visible');
-        // Always open on chart page on initial load
-        if(location.hash){try{history.replaceState(null,'','#chart');}catch(e){}}
-        navigateTo('chart',{silent:true});
+        // Show platform selection screen
+        platformScreen.classList.add('visible');
       },1500);
     },3000);
-  },3000);
+  },2000);
 })();
 
 initCodeMirror();
