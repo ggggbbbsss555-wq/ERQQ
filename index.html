@@ -639,7 +639,7 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
     <button class="toggle-indicators-arrow" id="toggleIndicatorsArrow" title="Hide/Show indicators"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
   </div>
 </div>
-<div class="top-controls" id="topControls"><div class="top-bar"><div class="top-row"><button class="top-btn symbol-btn" id="symbolBtn"><span class="symbol-name" id="currentSymbol">BTC/USDT</span><div class="symbol-info"><span class="symbol-price" id="currentPrice">67,234.50</span><span class="symbol-change positive" id="currentChange">+2.45%</span></div><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn tf-btn" id="timeframeBtn"><span id="currentTimeframe">1m</span><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn add-ind-btn" id="topAddIndicator" title="Add indicator"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div></div></div>
+<div class="top-controls" id="topControls"><div class="top-bar"><div class="top-row"><button class="top-btn symbol-btn" id="symbolBtn"><span class="symbol-name" id="currentSymbol">EURUSD_otc</span><div class="symbol-info"><span class="symbol-price" id="currentPrice">1.0852</span><span class="symbol-change positive" id="currentChange">+0.24%</span></div><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn tf-btn" id="timeframeBtn"><span id="currentTimeframe">1m</span><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn add-ind-btn" id="topAddIndicator" title="Add indicator"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div></div></div>
 <div class="tf-dropdown" id="tfDropdown"><div class="tf-dropdown-header"><div class="tf-dropdown-title">Timeframe</div><button class="tf-dropdown-close" id="tfClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="tf-options-grid" id="tfOptionsGrid"></div></div>
 <div class="overlay-menu" id="symbolMenu"><div class="overlay-header"><div class="overlay-top-row"><div class="overlay-title">Select Market</div><button class="close-btn" data-close="symbolMenu"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="search-box"><input type="text" class="search-input" id="symbolSearch" placeholder="Search symbol..." autocomplete="off" spellcheck="false"/><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div></div><div class="items-grid" id="symbolGrid"></div><div class="no-results" id="noResults">No markets found</div></div>
 <div class="indicators-page" id="indicatorsPage"><div class="indicators-page-header"><div class="indicators-top-row"><div class="indicators-title-row"><div class="indicators-page-title">Indicators Library</div><div class="indicators-count-badge" id="indicatorsCountBadge">0 indicators</div><button class="ind-page-btn import-file-btn" id="importTxtBtn" style="flex:0 0 auto;margin-left:8px;padding:5px 10px;font-size:11px" title="Import from TXT file">Import TXT</button></div><div class="indicators-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><input type="text" class="indicators-search" id="indicatorsSearch" placeholder="Search indicators..." autocomplete="off" spellcheck="false"/></div></div><div class="indicators-section-title" style="color:#aaa;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:18px 0 10px">My Indicators</div></div><div class="indicators-page-grid" id="indicatorsPageGrid"></div></div>
@@ -784,7 +784,7 @@ var CURRENCY_FLAGS={
   NGN:'🇳🇬',PHP:'🇵🇭',PKR:'🇵🇰',ZAR:'🇿🇦',DZD:'🇩🇿'
 };
 
-/* Get flag emojis for a symbol like 'EURUSD_otc' or 'BTC/USDT' */
+/* Get flag emojis for a symbol like 'EURUSD_otc' */
 function getFlagsForSymbol(sym){
   // Remove _otc suffix and / separator
   var clean=sym.replace(/_otc$/i,'').replace(/\//g,'');
@@ -801,22 +801,6 @@ function getFlagsForSymbol(sym){
 }
 
 var SYMBOLS=[
-  {symbol:'BTC/USDT',price:67234.50,change:2.45},
-  {symbol:'ETH/USDT',price:3456.20,change:1.82},
-  {symbol:'SOL/USDT',price:178.50,change:4.21},
-  {symbol:'BNB/USDT',price:612.30,change:-0.87},
-  {symbol:'XRP/USDT',price:0.5432,change:3.15},
-  {symbol:'ADA/USDT',price:0.4521,change:-1.23},
-  {symbol:'DOGE/USDT',price:0.1654,change:5.67},
-  {symbol:'AVAX/USDT',price:38.76,change:2.94},
-  {symbol:'DOT/USDT',price:7.23,change:-2.15},
-  {symbol:'MATIC/USDT',price:0.7823,change:1.45},
-  {symbol:'LINK/USDT',price:14.56,change:3.78},
-  {symbol:'UNI/USDT',price:9.87,change:-0.45},
-  {symbol:'ATOM/USDT',price:8.92,change:1.23},
-  {symbol:'LTC/USDT',price:84.56,change:0.89},
-  {symbol:'NEAR/USDT',price:5.43,change:6.12},
-  {symbol:'APT/USDT',price:11.23,change:-1.67},
   /* --- OTC exotic pairs (original) --- */
   {symbol:'BRLUSD_otc',price:0.1985,change:0.42},
   {symbol:'USDARS_otc',price:985.50,change:-0.31},
@@ -880,7 +864,7 @@ var DEFAULT_INDICATOR_CODE="// Custom Indicator (Bollinger Bands)\nfunction main
 
 /* ---------- Centralized State ---------- */
 var State={
-  currentSymbol:'BTC/USDT',
+  currentSymbol:'EURUSD_otc',
   currentTimeframe:'1m',
   currentPage:'chart',
   platform:'QUOTEX',
@@ -1484,15 +1468,15 @@ document.addEventListener('keydown',function(e){
   }
 });
 
-/* ---------- Signals ---------- */
+/* ---------- Signals (legacy data, signals page removed) ---------- */
 var nowSec=Math.floor(Date.now()/1000);
 var SIGNALS_DATA=[
-  {id:1,symbol:'BTC/USDT',type:'buy',entry:67234.50,duration:120,startTime:nowSec-30,result:null,profit:null,isNew:false},
-  {id:2,symbol:'ETH/USDT',type:'buy',entry:3456.20,duration:180,startTime:nowSec-90,result:null,profit:null,isNew:false},
-  {id:3,symbol:'SOL/USDT',type:'sell',entry:178.50,duration:90,startTime:nowSec-60,result:null,profit:null,isNew:false},
-  {id:4,symbol:'XRP/USDT',type:'buy',entry:0.5432,duration:240,startTime:nowSec-10,result:null,profit:null,isNew:true},
-  {id:5,symbol:'AVAX/USDT',type:'buy',entry:38.76,duration:60,startTime:nowSec-45,result:null,profit:null,isNew:true},
-  {id:6,symbol:'DOGE/USDT',type:'sell',entry:0.1654,duration:150,startTime:nowSec-120,result:null,profit:null,isNew:false}
+  {id:1,symbol:'EURUSD_otc',type:'buy',entry:1.0852,duration:120,startTime:nowSec-30,result:null,profit:null,isNew:false},
+  {id:2,symbol:'GBPUSD_otc',type:'buy',entry:1.3025,duration:180,startTime:nowSec-90,result:null,profit:null,isNew:false},
+  {id:3,symbol:'USDJPY_otc',type:'sell',entry:149.85,duration:90,startTime:nowSec-60,result:null,profit:null,isNew:false},
+  {id:4,symbol:'AUDUSD_otc',type:'buy',entry:0.6582,duration:240,startTime:nowSec-10,result:null,profit:null,isNew:true},
+  {id:5,symbol:'USDCAD_otc',type:'buy',entry:1.3585,duration:60,startTime:nowSec-45,result:null,profit:null,isNew:true},
+  {id:6,symbol:'EURJPY_otc',type:'sell',entry:163.45,duration:150,startTime:nowSec-120,result:null,profit:null,isNew:false}
 ];
 var TR=36,TC=2*Math.PI*TR,sUI=null;
 function getSR(s){return Math.max(0,s.duration-(Math.floor(Date.now()/1000)-s.startTime));}
@@ -1568,7 +1552,7 @@ var signalGeneratorTimer=null;
 function startSignalGenerator(){
   if(signalGeneratorTimer)clearInterval(signalGeneratorTimer);
   signalGeneratorTimer=setInterval(function(){
-    var syms=['BTC/USDT','ETH/USDT','SOL/USDT','XRP/USDT','AVAX/USDT','DOGE/USDT','LINK/USDT','ADA/USDT','NEAR/USDT','APT/USDT'];
+    var syms=['EURUSD_otc','GBPUSD_otc','USDJPY_otc','AUDUSD_otc','USDCAD_otc','EURJPY_otc','GBPJPY_otc','USDCHF_otc','EURAUD_otc','USDDZD_otc'];
     var sym=syms[Math.floor(Math.random()*syms.length)];
     var sd=getSymbolData(sym);
     var type=Math.random()<0.5?'buy':'sell';
