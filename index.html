@@ -639,7 +639,7 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
     <button class="toggle-indicators-arrow" id="toggleIndicatorsArrow" title="Hide/Show indicators"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
   </div>
 </div>
-<div class="top-controls" id="topControls"><div class="top-bar"><div class="top-row"><button class="top-btn symbol-btn" id="symbolBtn"><span class="symbol-name" id="currentSymbol">EURUSD_otc</span><div class="symbol-info"><span class="symbol-price" id="currentPrice">1.0852</span><span class="symbol-change positive" id="currentChange">+0.24%</span></div><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn tf-btn" id="timeframeBtn"><span id="currentTimeframe">1m</span><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn add-ind-btn" id="topAddIndicator" title="Add indicator"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div></div></div>
+<div class="top-controls" id="topControls"><div class="top-bar"><div class="top-row"><button class="top-btn symbol-btn" id="symbolBtn"><span class="symbol-name" id="currentSymbol">EURUSD-OTC</span><div class="symbol-info"><span class="symbol-price" id="currentPrice">1.0852</span><span class="symbol-change positive" id="currentChange">+0.24%</span></div><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn tf-btn" id="timeframeBtn"><span id="currentTimeframe">1m</span><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn add-ind-btn" id="topAddIndicator" title="Add indicator"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div></div></div>
 <div class="tf-dropdown" id="tfDropdown"><div class="tf-dropdown-header"><div class="tf-dropdown-title">Timeframe</div><button class="tf-dropdown-close" id="tfClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="tf-options-grid" id="tfOptionsGrid"></div></div>
 <div class="overlay-menu" id="symbolMenu"><div class="overlay-header"><div class="overlay-top-row"><div class="overlay-title">Select Market</div><button class="close-btn" data-close="symbolMenu"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="search-box"><input type="text" class="search-input" id="symbolSearch" placeholder="Search symbol..." autocomplete="off" spellcheck="false"/><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div></div><div class="items-grid" id="symbolGrid"></div><div class="no-results" id="noResults">No markets found</div></div>
 <div class="indicators-page" id="indicatorsPage"><div class="indicators-page-header"><div class="indicators-top-row"><div class="indicators-title-row"><div class="indicators-page-title">Indicators Library</div><div class="indicators-count-badge" id="indicatorsCountBadge">0 indicators</div><button class="ind-page-btn import-file-btn" id="importTxtBtn" style="flex:0 0 auto;margin-left:8px;padding:5px 10px;font-size:11px" title="Import from TXT file">Import TXT</button></div><div class="indicators-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><input type="text" class="indicators-search" id="indicatorsSearch" placeholder="Search indicators..." autocomplete="off" spellcheck="false"/></div></div><div class="indicators-section-title" style="color:#aaa;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:18px 0 10px">My Indicators</div></div><div class="indicators-page-grid" id="indicatorsPageGrid"></div></div>
@@ -784,10 +784,10 @@ var CURRENCY_FLAGS={
   NGN:'🇳🇬',PHP:'🇵🇭',PKR:'🇵🇰',ZAR:'🇿🇦',DZD:'🇩🇿'
 };
 
-/* Get flag emojis for a symbol like 'EURUSD_otc' */
+/* Get flag emojis for a symbol like 'EURUSD-OTC' */
 function getFlagsForSymbol(sym){
-  // Remove _otc suffix and / separator
-  var clean=sym.replace(/_otc$/i,'').replace(/\//g,'');
+  // Remove -OTC suffix and / separator
+  var clean=sym.replace(/-OTC$/i,'').replace(/\//g,'');
   if(clean.length===6){
     var base=clean.substring(0,3).toUpperCase();
     var quote=clean.substring(3,6).toUpperCase();
@@ -802,48 +802,48 @@ function getFlagsForSymbol(sym){
 
 var SYMBOLS=[
   /* --- OTC exotic pairs (original) --- */
-  {symbol:'BRLUSD_otc',price:0.1985,change:0.42},
-  {symbol:'USDARS_otc',price:985.50,change:-0.31},
-  {symbol:'USDBDT_otc',price:117.25,change:0.18},
-  {symbol:'USDCOP_otc',price:4150.75,change:-0.55},
-  {symbol:'USDEGP_otc',price:48.85,change:0.12},
-  {symbol:'USDIDR_otc',price:15820.50,change:-0.28},
-  {symbol:'USDINR_otc',price:83.42,change:0.22},
-  {symbol:'USDMXN_otc',price:17.15,change:-0.41},
-  {symbol:'USDNGN_otc',price:1485.30,change:0.67},
-  {symbol:'USDPHP_otc',price:56.78,change:-0.19},
-  {symbol:'USDPKR_otc',price:278.45,change:0.34},
-  {symbol:'USDZAR_otc',price:18.92,change:-0.48},
+  {symbol:'BRLUSD-OTC',price:0.1985,change:0.42},
+  {symbol:'USDARS-OTC',price:985.50,change:-0.31},
+  {symbol:'USDBDT-OTC',price:117.25,change:0.18},
+  {symbol:'USDCOP-OTC',price:4150.75,change:-0.55},
+  {symbol:'USDEGP-OTC',price:48.85,change:0.12},
+  {symbol:'USDIDR-OTC',price:15820.50,change:-0.28},
+  {symbol:'USDINR-OTC',price:83.42,change:0.22},
+  {symbol:'USDMXN-OTC',price:17.15,change:-0.41},
+  {symbol:'USDNGN-OTC',price:1485.30,change:0.67},
+  {symbol:'USDPHP-OTC',price:56.78,change:-0.19},
+  {symbol:'USDPKR-OTC',price:278.45,change:0.34},
+  {symbol:'USDZAR-OTC',price:18.92,change:-0.48},
   /* --- OTC cross-pair majors --- */
-  {symbol:'AUDCAD_otc',price:0.9125,change:0.15},
-  {symbol:'AUDCHF_otc',price:0.5742,change:-0.22},
-  {symbol:'AUDJPY_otc',price:98.35,change:0.41},
-  {symbol:'AUDNZD_otc',price:1.0823,change:-0.12},
-  {symbol:'AUDUSD_otc',price:0.6582,change:0.28},
-  {symbol:'CADCHF_otc',price:0.6298,change:-0.18},
-  {symbol:'CADJPY_otc',price:107.85,change:0.33},
-  {symbol:'CHFJPY_otc',price:171.20,change:-0.25},
-  {symbol:'EURAUD_otc',price:1.6485,change:0.19},
-  {symbol:'EURCAD_otc',price:1.4752,change:-0.14},
-  {symbol:'EURCHF_otc',price:0.9521,change:0.08},
-  {symbol:'EURGBP_otc',price:0.8334,change:-0.16},
-  {symbol:'EURJPY_otc',price:163.45,change:0.31},
-  {symbol:'EURNZD_otc',price:1.7825,change:-0.22},
-  {symbol:'EURUSD_otc',price:1.0852,change:0.24},
-  {symbol:'GBPAUD_otc',price:1.9785,change:-0.15},
-  {symbol:'GBPCAD_otc',price:1.7702,change:0.21},
-  {symbol:'GBPCHF_otc',price:1.1425,change:-0.09},
-  {symbol:'GBPJPY_otc',price:196.15,change:0.38},
-  {symbol:'GBPNZD_otc',price:2.1398,change:-0.27},
-  {symbol:'GBPUSD_otc',price:1.3025,change:0.18},
-  {symbol:'NZDCAD_otc',price:0.8425,change:-0.13},
-  {symbol:'NZDCHF_otc',price:0.5302,change:0.07},
-  {symbol:'NZDJPY_otc',price:90.85,change:-0.21},
-  {symbol:'NZDUSD_otc',price:0.6082,change:0.25},
-  {symbol:'USDCAD_otc',price:1.3585,change:-0.17},
-  {symbol:'USDCHF_otc',price:0.8825,change:0.11},
-  {symbol:'USDDZD_otc',price:134.50,change:0.05},
-  {symbol:'USDJPY_otc',price:149.85,change:-0.23}
+  {symbol:'AUDCAD-OTC',price:0.9125,change:0.15},
+  {symbol:'AUDCHF-OTC',price:0.5742,change:-0.22},
+  {symbol:'AUDJPY-OTC',price:98.35,change:0.41},
+  {symbol:'AUDNZD-OTC',price:1.0823,change:-0.12},
+  {symbol:'AUDUSD-OTC',price:0.6582,change:0.28},
+  {symbol:'CADCHF-OTC',price:0.6298,change:-0.18},
+  {symbol:'CADJPY-OTC',price:107.85,change:0.33},
+  {symbol:'CHFJPY-OTC',price:171.20,change:-0.25},
+  {symbol:'EURAUD-OTC',price:1.6485,change:0.19},
+  {symbol:'EURCAD-OTC',price:1.4752,change:-0.14},
+  {symbol:'EURCHF-OTC',price:0.9521,change:0.08},
+  {symbol:'EURGBP-OTC',price:0.8334,change:-0.16},
+  {symbol:'EURJPY-OTC',price:163.45,change:0.31},
+  {symbol:'EURNZD-OTC',price:1.7825,change:-0.22},
+  {symbol:'EURUSD-OTC',price:1.0852,change:0.24},
+  {symbol:'GBPAUD-OTC',price:1.9785,change:-0.15},
+  {symbol:'GBPCAD-OTC',price:1.7702,change:0.21},
+  {symbol:'GBPCHF-OTC',price:1.1425,change:-0.09},
+  {symbol:'GBPJPY-OTC',price:196.15,change:0.38},
+  {symbol:'GBPNZD-OTC',price:2.1398,change:-0.27},
+  {symbol:'GBPUSD-OTC',price:1.3025,change:0.18},
+  {symbol:'NZDCAD-OTC',price:0.8425,change:-0.13},
+  {symbol:'NZDCHF-OTC',price:0.5302,change:0.07},
+  {symbol:'NZDJPY-OTC',price:90.85,change:-0.21},
+  {symbol:'NZDUSD-OTC',price:0.6082,change:0.25},
+  {symbol:'USDCAD-OTC',price:1.3585,change:-0.17},
+  {symbol:'USDCHF-OTC',price:0.8825,change:0.11},
+  {symbol:'USDDZD-OTC',price:134.50,change:0.05},
+  {symbol:'USDJPY-OTC',price:149.85,change:-0.23}
 ];
 var TIMEFRAMES=[
   {tf:'1m',label:'1 Minute',seconds:60},
@@ -864,7 +864,7 @@ var DEFAULT_INDICATOR_CODE="// Custom Indicator (Bollinger Bands)\nfunction main
 
 /* ---------- Centralized State ---------- */
 var State={
-  currentSymbol:'EURUSD_otc',
+  currentSymbol:'EURUSD-OTC',
   currentTimeframe:'1m',
   currentPage:'chart',
   platform:'QUOTEX',
@@ -1471,12 +1471,12 @@ document.addEventListener('keydown',function(e){
 /* ---------- Signals (legacy data, signals page removed) ---------- */
 var nowSec=Math.floor(Date.now()/1000);
 var SIGNALS_DATA=[
-  {id:1,symbol:'EURUSD_otc',type:'buy',entry:1.0852,duration:120,startTime:nowSec-30,result:null,profit:null,isNew:false},
-  {id:2,symbol:'GBPUSD_otc',type:'buy',entry:1.3025,duration:180,startTime:nowSec-90,result:null,profit:null,isNew:false},
-  {id:3,symbol:'USDJPY_otc',type:'sell',entry:149.85,duration:90,startTime:nowSec-60,result:null,profit:null,isNew:false},
-  {id:4,symbol:'AUDUSD_otc',type:'buy',entry:0.6582,duration:240,startTime:nowSec-10,result:null,profit:null,isNew:true},
-  {id:5,symbol:'USDCAD_otc',type:'buy',entry:1.3585,duration:60,startTime:nowSec-45,result:null,profit:null,isNew:true},
-  {id:6,symbol:'EURJPY_otc',type:'sell',entry:163.45,duration:150,startTime:nowSec-120,result:null,profit:null,isNew:false}
+  {id:1,symbol:'EURUSD-OTC',type:'buy',entry:1.0852,duration:120,startTime:nowSec-30,result:null,profit:null,isNew:false},
+  {id:2,symbol:'GBPUSD-OTC',type:'buy',entry:1.3025,duration:180,startTime:nowSec-90,result:null,profit:null,isNew:false},
+  {id:3,symbol:'USDJPY-OTC',type:'sell',entry:149.85,duration:90,startTime:nowSec-60,result:null,profit:null,isNew:false},
+  {id:4,symbol:'AUDUSD-OTC',type:'buy',entry:0.6582,duration:240,startTime:nowSec-10,result:null,profit:null,isNew:true},
+  {id:5,symbol:'USDCAD-OTC',type:'buy',entry:1.3585,duration:60,startTime:nowSec-45,result:null,profit:null,isNew:true},
+  {id:6,symbol:'EURJPY-OTC',type:'sell',entry:163.45,duration:150,startTime:nowSec-120,result:null,profit:null,isNew:false}
 ];
 var TR=36,TC=2*Math.PI*TR,sUI=null;
 function getSR(s){return Math.max(0,s.duration-(Math.floor(Date.now()/1000)-s.startTime));}
@@ -1552,7 +1552,7 @@ var signalGeneratorTimer=null;
 function startSignalGenerator(){
   if(signalGeneratorTimer)clearInterval(signalGeneratorTimer);
   signalGeneratorTimer=setInterval(function(){
-    var syms=['EURUSD_otc','GBPUSD_otc','USDJPY_otc','AUDUSD_otc','USDCAD_otc','EURJPY_otc','GBPJPY_otc','USDCHF_otc','EURAUD_otc','USDDZD_otc'];
+    var syms=['EURUSD-OTC','GBPUSD-OTC','USDJPY-OTC','AUDUSD-OTC','USDCAD-OTC','EURJPY-OTC','GBPJPY-OTC','USDCHF-OTC','EURAUD-OTC','USDDZD-OTC'];
     var sym=syms[Math.floor(Math.random()*syms.length)];
     var sd=getSymbolData(sym);
     var type=Math.random()<0.5?'buy':'sell';
