@@ -2484,6 +2484,23 @@ function selectPlatform(name){
 (function(){
   // Restore saved state first
   var restored=loadState();
+
+  // Skip intro and platform selection when embedded in an iframe (shell page)
+  var params=new URLSearchParams(window.location.search);
+  var isEmbedded=params.get('embed')==='1'||(window.self!==window.top);
+  if(isEmbedded){
+    // Show main app immediately, skip logo + platform selection
+    var chartContainer=document.getElementById('chartContainer');
+    var topControls=document.getElementById('topControls');
+    var bottomBar=document.getElementById('bottomBar');
+    chartContainer.classList.add('visible');
+    topControls.classList.add('visible');
+    bottomBar.classList.add('visible');
+    try{history.replaceState(null,'','#chart');}catch(e){}
+    navigateTo('chart',{silent:true});
+    return;
+  }
+
   var logoContainer=document.querySelector('.logo-container');
   var platformScreen=document.getElementById('platformScreen');
   // Wait 2s, then show logo (visible for 3s), then fade out + show platform screen
