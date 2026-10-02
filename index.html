@@ -625,6 +625,118 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
   font-size:13px;
   margin-right:4px;
 }
+
+/* ===== Platform Button in Top Bar ===== */
+.platform-btn-top{
+  display:flex;align-items:center;gap:5px;
+  padding:7px 12px;
+  background:linear-gradient(180deg,rgba(0,210,255,0.08) 0%,rgba(0,153,204,0.03) 100%);
+  border:1px solid rgba(0,210,255,0.3);
+  border-radius:9px;
+  color:#00d2ff;
+  font-size:11px;font-weight:700;
+  letter-spacing:0.5px;
+  cursor:pointer;
+  transition:all 0.2s ease;
+  font-family:inherit;
+}
+.platform-btn-top:hover{
+  background:linear-gradient(180deg,rgba(0,210,255,0.15) 0%,rgba(0,153,204,0.05) 100%);
+  border-color:#00d2ff;
+  color:#fff;
+}
+.platform-btn-top span{font-size:11px;font-weight:800}
+.platform-btn-top .chevron{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:480px){
+  .platform-btn-top{padding:6px 10px;font-size:10px}
+  .platform-btn-top span{font-size:10px}
+}
+
+/* ===== Platform Selector Modal ===== */
+.platform-modal{
+  position:fixed;inset:0;z-index:1500;
+  background:rgba(0,0,0,0.85);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;transition:opacity 0.3s ease;
+  backdrop-filter:blur(4px);
+}
+.platform-modal.visible{display:flex;opacity:1}
+.platform-modal-box{
+  background:linear-gradient(180deg,#131313 0%,#080808 100%);
+  border:1px solid #1f1f1f;
+  border-radius:14px;
+  padding:24px 20px 20px;
+  max-width:340px;width:100%;
+}
+.platform-modal-title{
+  font-size:14px;font-weight:700;color:#fff;
+  letter-spacing:0.5px;
+  margin-bottom:6px;text-align:center;
+}
+.platform-modal-desc{
+  font-size:11px;color:#888;font-weight:500;
+  text-align:center;margin-bottom:18px;
+  letter-spacing:0.3px;
+}
+.platform-modal-options{
+  display:flex;flex-direction:column;gap:10px;
+}
+.platform-modal-option{
+  padding:16px 14px;
+  background:linear-gradient(180deg,#161616 0%,#0a0a0a 100%);
+  border:1px solid #222;
+  border-radius:10px;
+  cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+  transition:all 0.22s ease;
+  font-family:inherit;color:inherit;text-align:left;
+}
+.platform-modal-option:hover{
+  border-color:#00d2ff;
+  background:linear-gradient(180deg,rgba(0,210,255,0.08) 0%,#0a0a0a 100%);
+}
+.platform-modal-option.selected{
+  border-color:#00d2ff;
+  background:linear-gradient(180deg,rgba(0,210,255,0.12) 0%,rgba(0,210,255,0.03) 100%);
+}
+.platform-modal-option-icon{
+  width:40px;height:40px;flex-shrink:0;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#00d2ff 0%,#0099cc 100%);
+  border:1px solid #00d2ff;
+}
+.platform-modal-option-icon svg{width:22px;height:22px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.platform-modal-option-info{flex:1;min-width:0}
+.platform-modal-option-name{
+  font-size:15px;font-weight:800;color:#fff;
+  letter-spacing:0.5px;margin-bottom:2px;
+}
+.platform-modal-option-desc{
+  font-size:10px;color:#888;font-weight:500;
+}
+.platform-modal-option-check{
+  width:20px;height:20px;flex-shrink:0;
+  border-radius:50%;
+  background:#00d2ff;
+  display:none;align-items:center;justify-content:center;
+}
+.platform-modal-option.selected .platform-modal-option-check{display:flex}
+.platform-modal-option-check svg{width:12px;height:12px;stroke:#000;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.platform-modal-close{
+  width:100%;margin-top:14px;
+  padding:10px;
+  background:transparent;
+  border:1px solid #1f1f1f;
+  border-radius:9px;
+  color:#888;
+  font-family:inherit;font-size:12px;font-weight:700;
+  letter-spacing:0.5px;text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.platform-modal-close:hover{border-color:#333;color:#fff}
 </style>
 </head>
 <body>
@@ -639,7 +751,7 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
     <button class="toggle-indicators-arrow" id="toggleIndicatorsArrow" title="Hide/Show indicators"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
   </div>
 </div>
-<div class="top-controls" id="topControls"><div class="top-bar"><div class="top-row"><button class="top-btn symbol-btn" id="symbolBtn"><span class="symbol-name" id="currentSymbol">EURUSD-OTC</span><div class="symbol-info"><span class="symbol-price" id="currentPrice">1.0852</span><span class="symbol-change positive" id="currentChange">+0.24%</span></div><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn tf-btn" id="timeframeBtn"><span id="currentTimeframe">1m</span><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn add-ind-btn" id="topAddIndicator" title="Add indicator"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div></div></div>
+<div class="top-controls" id="topControls"><div class="top-bar"><div class="top-row"><button class="top-btn symbol-btn" id="symbolBtn"><span class="symbol-name" id="currentSymbol">EURUSD-OTC</span><div class="symbol-info"><span class="symbol-price" id="currentPrice">1.0852</span><span class="symbol-change positive" id="currentChange">+0.24%</span></div><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn tf-btn" id="timeframeBtn"><span id="currentTimeframe">1m</span><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn platform-btn-top" id="platformTopBtn" title="Change platform"><span id="topPlatformName">QUOTEX</span><svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button><button class="top-btn add-ind-btn" id="topAddIndicator" title="Add indicator"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div></div></div>
 <div class="tf-dropdown" id="tfDropdown"><div class="tf-dropdown-header"><div class="tf-dropdown-title">Timeframe</div><button class="tf-dropdown-close" id="tfClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="tf-options-grid" id="tfOptionsGrid"></div></div>
 <div class="overlay-menu" id="symbolMenu"><div class="overlay-header"><div class="overlay-top-row"><div class="overlay-title">Select Market</div><button class="close-btn" data-close="symbolMenu"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="search-box"><input type="text" class="search-input" id="symbolSearch" placeholder="Search symbol..." autocomplete="off" spellcheck="false"/><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div></div><div class="items-grid" id="symbolGrid"></div><div class="no-results" id="noResults">No markets found</div></div>
 <div class="indicators-page" id="indicatorsPage"><div class="indicators-page-header"><div class="indicators-top-row"><div class="indicators-title-row"><div class="indicators-page-title">Indicators Library</div><div class="indicators-count-badge" id="indicatorsCountBadge">0 indicators</div><button class="ind-page-btn import-file-btn" id="importTxtBtn" style="flex:0 0 auto;margin-left:8px;padding:5px 10px;font-size:11px" title="Import from TXT file">Import TXT</button></div><div class="indicators-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><input type="text" class="indicators-search" id="indicatorsSearch" placeholder="Search indicators..." autocomplete="off" spellcheck="false"/></div></div><div class="indicators-section-title" style="color:#aaa;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:18px 0 10px">My Indicators</div></div><div class="indicators-page-grid" id="indicatorsPageGrid"></div></div>
@@ -648,6 +760,41 @@ html,body{width:100%;height:100%;background:#000;display:flex;justify-content:ce
 <div class="modal-overlay" id="newIndicatorModal"><div class="modal"><div class="modal-title">New Indicator</div><div class="modal-desc">Enter a name for your custom indicator</div><input type="text" class="modal-input" id="newIndicatorInput" placeholder="e.g. MyStrategy" autocomplete="off" spellcheck="false"/><div class="modal-filename" id="newIndicatorFilename">File: untitled.js</div><div class="modal-error" id="newIndicatorError"></div><div class="modal-actions"><button class="modal-btn" id="newIndicatorCancel">Cancel</button><button class="modal-btn primary" id="newIndicatorContinue">Continue</button></div></div></div>
 <div class="modal-overlay" id="settingsModal"><div class="modal"><div class="modal-title" id="settingsModalTitle">Indicator Settings</div><div class="modal-desc" id="settingsModalDesc">Customize indicator properties</div><div class="modal-row"><label>Name</label><input type="text" id="settingsNameInput" placeholder="Indicator name" autocomplete="off" spellcheck="false"/></div><div class="modal-row"><label>Color</label><input type="color" id="settingsColorInput" value="#00ff88"/></div><div class="modal-row"><label>Period</label><input type="number" id="settingsPeriodInput" value="14" min="1" max="999"/></div><div class="modal-row"><label>Width</label><select id="settingsWidthSelect"><option value="1">1 (Thin)</option><option value="2" selected>2 (Normal)</option><option value="3">3 (Medium)</option><option value="4">4 (Thick)</option><option value="5">5 (Bold)</option></select></div><div class="modal-row"><label>Style</label><select id="settingsStyleSelect"><option value="0" selected>Solid</option><option value="1">Dotted</option><option value="2">Dashed</option><option value="3">Large Dashed</option><option value="4">Sparse Dotted</option></select></div><div class="modal-row"><label>Visible</label><select id="settingsVisibleSelect"><option value="1" selected>Yes</option><option value="0">No</option></select></div><div class="modal-error" id="settingsError"></div><div class="modal-actions"><button class="modal-btn" id="settingsCancel">Cancel</button><button class="modal-btn primary" id="settingsApply">Apply</button></div></div></div>
 <div class="modal-overlay" id="quickAddModal"><div class="modal"><div class="modal-title">Quick Add Indicator</div><div class="modal-desc">Choose an existing indicator to run on chart, or create new</div><div id="quickAddList" style="max-height:280px;overflow-y:auto;margin-bottom:14px"></div><div class="modal-actions"><button class="modal-btn" id="quickAddCancel">Cancel</button><button class="modal-btn primary" id="quickAddNew">+ New Indicator</button></div></div></div>
+
+<!-- Platform Selector Modal -->
+<div class="platform-modal" id="platformModal">
+  <div class="platform-modal-box">
+    <div class="platform-modal-title">Select Platform</div>
+    <div class="platform-modal-desc">Choose your trading platform</div>
+    <div class="platform-modal-options">
+      <button class="platform-modal-option" data-platform="QUOTEX" onclick="changePlatform('QUOTEX')">
+        <div class="platform-modal-option-icon">
+          <svg viewBox="0 0 24 24"><line x1="7" y1="3" x2="7" y2="21"/><rect x="4" y="7" width="6" height="9" fill="#000" fill-opacity="0.15"/><line x1="17" y1="2" x2="17" y2="22"/><rect x="14" y="10" width="6" height="7" fill="#000" fill-opacity="0.15"/></svg>
+        </div>
+        <div class="platform-modal-option-info">
+          <div class="platform-modal-option-name">QUOTEX</div>
+          <div class="platform-modal-option-desc">Binary options trading</div>
+        </div>
+        <div class="platform-modal-option-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </button>
+      <button class="platform-modal-option" data-platform="BINOLLA" onclick="changePlatform('BINOLLA')">
+        <div class="platform-modal-option-icon">
+          <svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+        </div>
+        <div class="platform-modal-option-info">
+          <div class="platform-modal-option-name">BINOLLA</div>
+          <div class="platform-modal-option-desc">Smart advanced trading</div>
+        </div>
+        <div class="platform-modal-option-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </button>
+    </div>
+    <button class="platform-modal-close" onclick="closePlatformModal()">Cancel</button>
+  </div>
+</div>
 
 <div class="logo-container">
 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -2577,6 +2724,10 @@ function initTelegramUser(){
       language:p.get('tg_lang')||'en',
       platform:p.get('tg_platform')||'QUOTEX'
     };
+    // Update platform display from Telegram data
+    State.platform=State.tgUser.platform;
+    var topName=document.getElementById('topPlatformName');
+    if(topName) topName.textContent=State.platform;
     // Track that user opened the signals page
     trackEvent('signals_page_open',{symbol:State.currentSymbol,timeframe:State.currentTimeframe});
   }
@@ -2623,6 +2774,38 @@ navigateTo=function(page,opts){
 };
 
 initTelegramUser();
+
+/* ===== Platform Selector Modal ===== */
+function openPlatformModal(){
+  var modal=document.getElementById('platformModal');
+  var current=State.platform||'QUOTEX';
+  document.querySelectorAll('.platform-modal-option').forEach(function(opt){
+    opt.classList.toggle('selected',opt.getAttribute('data-platform')===current);
+  });
+  modal.classList.add('visible');
+}
+function closePlatformModal(){
+  document.getElementById('platformModal').classList.remove('visible');
+}
+function changePlatform(name){
+  State.platform=name;
+  var topName=document.getElementById('topPlatformName');
+  if(topName) topName.textContent=name;
+  closePlatformModal();
+  // Track platform change
+  if(typeof trackEvent==='function'){
+    trackEvent('platform_change',{platform:name});
+  }
+}
+// Platform button click handler
+document.getElementById('platformTopBtn').addEventListener('click',function(e){
+  e.stopPropagation();
+  openPlatformModal();
+});
+// Close modal when clicking outside
+document.getElementById('platformModal').addEventListener('click',function(e){
+  if(e.target===this) closePlatformModal();
+});
 </script>
 </body>
 </html>
